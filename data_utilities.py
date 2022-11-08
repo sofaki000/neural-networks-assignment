@@ -84,6 +84,7 @@ def loadDataFromPathAndLabels(paths, labels, encoder=OneHotEncoder):
 
 
 def load_test_data(encoder):
+    print("loading test data is called")
     paths, labels = loadTestSet(encoder)
     return loadDataFromPathAndLabels(paths, labels,encoder=encoder)
 
@@ -117,5 +118,6 @@ def load_train_and_test_data_for_some_feelings(feelings):
     return loadDataFromPathAndLabels(paths, labels)
 
 def load_train_and_test_data(encoder = OneHotEncoder, get_chunks=10):
+    print("Calling load and train test data")
     paths, labels = loadPathsAndLabels(get_chunks)
     return loadDataFromPathAndLabels(paths, labels)

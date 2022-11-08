@@ -1,5 +1,7 @@
 import numpy as np
-from sklearn.preprocessing import LabelEncoder
+from sklearn.preprocessing import LabelEncoder, MinMaxScaler
+from dataHandler import get_raw_data, get_normalized_data, get_standarized_data, get_rescaled_data, \
+    get_robustly_scaled_data
 
 experiments_file_name="nearest_centroid_experiments_impl.txt"
 f = open(experiments_file_name, "a")
@@ -55,15 +57,13 @@ class Nearest_centroid_Impl(object):
         results = self.predict(A)
         acc = np.mean(results == B)
         return acc, results
-from data_utilities import load_train_and_test_data, load_test_data
-import matplotlib.pyplot as plt
-from sklearn import preprocessing
+
 from timeit import default_timer as timer
+from time import gmtime, strftime
 
-
-f.write("-------------------------------------------------------------------\n")
-# X_train, y_train, X_test, y_test = load_test_data(encoder=LabelEncoder)
-X_train, y_train, X_test, y_test = load_train_and_test_data(encoder=LabelEncoder, get_chunks=None)
+experiments_date = strftime("%Y-%m-%d %H:%M:%S", gmtime())
+f.write(f"---------------------------{experiments_date}------------------------------------\n")
+X_train, y_train, X_test, y_test = get_raw_data()
 data_used = f'Training data shape:{X_train.shape}\nTraining labels shape:{y_train.shape}\nTest data shape:{X_test.shape}\nTest labels' \
             f' shape: {y_test.shape}\n'
 f.write(data_used)
@@ -90,30 +90,44 @@ def train_and_test_data_for_different_preprocessing(experiment_title, X_train, y
 ###################### Experiment 1 ######################
 f.write("\nExperiment 1\n")
 experiment_1_title="Raw train and test data\n"
-train_and_test_data_for_different_preprocessing(experiment_1_title,
-                                                X_train=X_train, y_train=y_train,
+train_and_test_data_for_different_preprocessing(experiment_1_title, X_train=X_train, y_train=y_train,
                                                 X_test=X_test, y_test=y_test)
 
 ###################### Experiment 2 ######################
 f.write("\nExperiment 2\n")
 experiment_2_title="Normalizing train and test data\n"
-normalized_train_data = preprocessing.normalize(X_train)
-normalized_test_data = preprocessing.normalize(X_test)
+normalized_train_data, y_train, normalized_test_data, y_test = get_normalized_data()
 train_and_test_data_for_different_preprocessing(experiment_2_title,
                                                 X_train=normalized_train_data, y_train=y_train,
                                                 X_test=normalized_test_data, y_test=y_test)
 
 
 ###################### Experiment 3 ######################
+# StandardScaler therefore cannot guarantee balanced feature scales in the presence of outliers.
 f.write("\nExperiment 3\n")
 experiment_3_title="Standardization of train and test data\n"
-scaler_train = preprocessing.StandardScaler().fit(X_train)
-x_scaled_train = scaler_train.transform(X_train)
-scaler_test = preprocessing.StandardScaler().fit(X_test)
-x_scaled_test = scaler_test.transform(X_test)
+x_scaled_train, y_train, x_scaled_test, y_test = get_standarized_data()
 train_and_test_data_for_different_preprocessing(experiment_3_title,
                                                 X_train=x_scaled_train, y_train=y_train,
                                                 X_test=x_scaled_test, y_test=y_test)
 
 
+###################### Experiment 4 ######################
+# MinMaxScaler rescales the data set such that all feature values are in the range [0, 1] as shown in the right panel below.
+f.write("\nExperiment 4\n")
+experiment_4_title="Rescaled train and test data in the range [0,1]\n"
+x_scaled_train, y_train, x_scaled_test, y_test =get_rescaled_data()
+train_and_test_data_for_different_preprocessing(experiment_4_title, X_train=x_scaled_train, y_train=y_train,
+                                                X_test=x_scaled_test, y_test=y_test)
+
+###################### Experiment 5 ######################
+# Robust scaler: Scales features using statistics that are robust to outliers.
+# This Scaler removes the median and scales the data according to the quantile range (defaults to IQR:
+# Interquartile Range). The IQR is the range between the 1st quartile (25th quantile) and the 3rd quartile (75th quantile).
+# Centering and scaling happen independently on each feature by computing the relevant statistics
+# on the samples in the training set. Median and interquartile range are then stored to be used on later data using the transform method.
+f.write("\nExperiment 5\n")
+experiment_5_title="Scaling features independetly\n"
+x_scaled_train, y_train, x_scaled_test, y_test = get_robustly_scaled_data()
+train_and_test_data_for_different_preprocessing(experiment_5_title, X_train=x_scaled_train, y_train=y_train, X_test=x_scaled_test, y_test=y_test)
 f.close()
