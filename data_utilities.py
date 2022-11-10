@@ -60,7 +60,7 @@ def loadTestSet(get_chunks=10):
 
 
 
-def loadDataFromPathAndLabels(paths, labels, encoder=OneHotEncoder):
+def loadDataFromPathAndLabels(paths, labels, encoder=OneHotEncoder ):
     df = pd.DataFrame()
     df['speech'] = paths
     df['label'] = labels
