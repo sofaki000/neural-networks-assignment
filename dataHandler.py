@@ -8,8 +8,9 @@ y_train = []
 X_test =[]
 y_test = []
 
-
+# Loads some data for developing
 X_train, y_train, X_test, y_test = load_test_data(encoder=LabelEncoder)
+#Loads hole dataset:
 #X_train, y_train, X_test, y_test = load_train_and_test_data(encoder=LabelEncoder, get_chunks=None)
 
 def get_raw_data():

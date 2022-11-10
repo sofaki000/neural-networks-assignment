@@ -1,5 +1,4 @@
 import numpy as np
-from sklearn.preprocessing import LabelEncoder, MinMaxScaler
 from dataHandler import get_raw_data, get_normalized_data, get_standarized_data, get_rescaled_data, \
     get_robustly_scaled_data
 
@@ -88,14 +87,12 @@ def train_and_test_data_for_different_preprocessing(experiment_title, X_train, y
 
 
 ###################### Experiment 1 ######################
-f.write("\nExperiment 1\n")
-experiment_1_title="Raw train and test data\n"
+experiment_1_title="Experiment 1- Raw train and test data\n"
 train_and_test_data_for_different_preprocessing(experiment_1_title, X_train=X_train, y_train=y_train,
                                                 X_test=X_test, y_test=y_test)
 
 ###################### Experiment 2 ######################
-f.write("\nExperiment 2\n")
-experiment_2_title="Normalizing train and test data\n"
+experiment_2_title="Experiment 2- Normalizing train and test data\n"
 normalized_train_data, y_train, normalized_test_data, y_test = get_normalized_data()
 train_and_test_data_for_different_preprocessing(experiment_2_title,
                                                 X_train=normalized_train_data, y_train=y_train,
@@ -104,8 +101,7 @@ train_and_test_data_for_different_preprocessing(experiment_2_title,
 
 ###################### Experiment 3 ######################
 # StandardScaler therefore cannot guarantee balanced feature scales in the presence of outliers.
-f.write("\nExperiment 3\n")
-experiment_3_title="Standardization of train and test data\n"
+experiment_3_title="Experiment 3- Standardization of train and test data\n"
 x_scaled_train, y_train, x_scaled_test, y_test = get_standarized_data()
 train_and_test_data_for_different_preprocessing(experiment_3_title,
                                                 X_train=x_scaled_train, y_train=y_train,
@@ -114,8 +110,7 @@ train_and_test_data_for_different_preprocessing(experiment_3_title,
 
 ###################### Experiment 4 ######################
 # MinMaxScaler rescales the data set such that all feature values are in the range [0, 1] as shown in the right panel below.
-f.write("\nExperiment 4\n")
-experiment_4_title="Rescaled train and test data in the range [0,1]\n"
+experiment_4_title="Experiment 4- Rescaled train and test data in the range [0,1]\n"
 x_scaled_train, y_train, x_scaled_test, y_test =get_rescaled_data()
 train_and_test_data_for_different_preprocessing(experiment_4_title, X_train=x_scaled_train, y_train=y_train,
                                                 X_test=x_scaled_test, y_test=y_test)
@@ -126,8 +121,7 @@ train_and_test_data_for_different_preprocessing(experiment_4_title, X_train=x_sc
 # Interquartile Range). The IQR is the range between the 1st quartile (25th quantile) and the 3rd quartile (75th quantile).
 # Centering and scaling happen independently on each feature by computing the relevant statistics
 # on the samples in the training set. Median and interquartile range are then stored to be used on later data using the transform method.
-f.write("\nExperiment 5\n")
-experiment_5_title="Scaling features independetly\n"
+experiment_5_title="Experiment 5- Scaling features independently\n"
 x_scaled_train, y_train, x_scaled_test, y_test = get_robustly_scaled_data()
 train_and_test_data_for_different_preprocessing(experiment_5_title, X_train=x_scaled_train, y_train=y_train, X_test=x_scaled_test, y_test=y_test)
 f.close()

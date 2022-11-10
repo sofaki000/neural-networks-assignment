@@ -37,7 +37,7 @@ def load_feeling(feelings):
 def loadTestSet(get_chunks=10):
     paths = []
     labels = []
-    path = '../test_data3'
+    path = '../test_data'
     if os.path.exists(path) is False:
         raise Exception("Can't find data")
     counter =0
