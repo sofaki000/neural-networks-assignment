@@ -1,3 +1,5 @@
+import math
+from collections import Counter
 import torch
 import torchvision.transforms as transforms
 import torch.nn as nn
@@ -18,17 +20,23 @@ if __name__ == '__main__':
             self.pool = nn.MaxPool2d(2, 2)
             self.conv2 = nn.Conv2d(6, 16, 1)
             # self.fc1 = nn.Linear(16 * batch_size * 40, 120)
-            self.fc1 = nn.Linear(16 * batch_size * number_of_features, 120)
+            self.fc1 = nn.Linear(16 * number_of_features, 120)
             self.fc2 = nn.Linear(120, 84)
             self.fc3 = nn.Linear(84, batch_size*number_of_output_classes)
 
 
         def forward(self, x):
             x = F.relu(self.conv1(x)) #  self.pool(
-            x =  F.relu(self.conv2(x))#self.pool(
-            x = x.flatten() # flatten all dimensions except batch
-            x = F.relu(self.fc1(x))
-            x = F.relu(self.fc2(x))
+            x =  F.relu(self.conv2(x)) #self.pool(
+
+            # giati den einai to batch prwto? x =  torch.flatten(x, 1) # flatten all dimensions except batch
+            # x = torch.flatten(x.transpose(0, 1), 1)
+            x = torch.flatten(x, 1)
+            # x = F.relu(self.fc1(x))
+            # x = F.relu(self.fc2(x))
+            # x = self.fc3(x)
+            x = (self.fc1(x))
+            x = (self.fc2(x))
             x = self.fc3(x)
             return x
 
@@ -46,17 +54,17 @@ if __name__ == '__main__':
     X_train, y_train, X_test, y_test = get_raw_data()
 
     # TODO: try different encoding
-    #TODO: try datasets
-    enc = OneHotEncoder()
-    encoded_labels = enc.fit_transform(y_train.reshape(len(y_train), 1))
+    # #TODO: try datasets
+    # enc = OneHotEncoder()
+    # encoded_labels = enc.fit_transform(y_train.reshape(len(y_train), 1))
 
-    number_of_output_classes = encoded_labels.shape[1]
+    number_of_output_classes =  len(Counter(y_train).keys())
 
     criterion = nn.CrossEntropyLoss()
 
     learning_rates = [0.1,0.01,0.001,0.0001]
     # learning_rates =[0.001]
-    n_epochs = 100
+    n_epochs = 10
     cnn = CNN(batch_size=batch_size, number_of_output_classes=number_of_output_classes,number_of_features=40)
 
     losses_over_experiments = []
@@ -65,48 +73,52 @@ if __name__ == '__main__':
     for optimizer_idx in range(len(optimizers)):
         print(f"Optimizer name: {optimizers[optimizer_idx].__name__}")
         for k in range(len(learning_rates)):
-            # optimizer = optim.SGD(cnn.parameters(), lr=learning_rates[k], momentum=0.9)
             optimizer = optimizers[optimizer_idx](cnn.parameters(), lr=learning_rates[k])
             losses_over_epochs = []
             title = f'Ep:{n_epochs} lr:{learning_rates[k]} batch:{batch_size}'
             print(title)
             titles.append(title)
+            epoch_loss = 0.0
 
             for epoch in range(n_epochs):  # loop over the dataset multiple times
-                epoch_loss = 0.0
-                for i in range(0,X_train.shape[0],batch_size):
+                # for i in range(0,X_train.shape[0],batch_size):
+                for i in range(X_train.shape[0]):
                     batch_data = X_train[(i):(i + batch_size)]
-                    batch_labels = encoded_labels[(i):(i + batch_size)]
+                    batch_labels = y_train[(i):(i + batch_size)]
+                    # batch_data = X_train[i]
+                    # batch_labels = y_train[i]
                     # get the inputs; data is a list of [inputs, labels]
-                    inputs= torch.tensor(batch_data )
-                    inputs = inputs[None,:, :]
-                    labels = torch.tensor(batch_labels.toarray(),dtype=torch.float32)
+                    inputs= torch.tensor(batch_data)
+                    inputs = inputs[:, None,None, :]
+                    labels = torch.tensor(batch_labels,dtype=torch.float32)
 
                     # zero the parameter gradients
                     optimizer.zero_grad()
 
                     # forward + backward + optimize
                     outputs = cnn(inputs)
-                    loss = criterion(outputs, labels.squeeze().flatten())
+                    loss = criterion(outputs, labels.type(torch.LongTensor))# criterion(outputs, labels.squeeze().flatten())
                     loss.backward()
                     optimizer.step()
 
                     # print statistics
                     epoch_loss += loss.item()
+                    print(f"loss is now {epoch_loss}")
 
 
-                if epoch % print_every_n_batches == 0:    # print every 2 mini-batches
-                    loss_per_batch_per_sample = ((epoch_loss / print_every_n_batches)/batch_size)
-                    print(f'Epoch: {epoch} loss: {loss_per_batch_per_sample:.3f}')
-                    losses_over_epochs.append(loss_per_batch_per_sample)
-                    epoch_loss = 0.0
+                    if i%10==0:
+                        loss_per_epoch_per_batch = ((epoch_loss)/batch_size)
+                        print(f'Epoch: {epoch} loss: {loss_per_epoch_per_batch:.3f}')
+                        losses_over_epochs.append(loss_per_epoch_per_batch)
+                        epoch_loss = 0.0
+                # epoch ended
             losses_over_experiments.append(losses_over_epochs)
 
 
         if optimizer_idx==0: # prwta to SGD
-            experiment_title = "SGD_results"
+            experiment_title = "results/SGD/SGD_results"
         else:
-            experiment_title="Adam_results"
+            experiment_title="results/Adam/Adam_results"
         save_multiple_plots_for_different_experiments(losses_over_experiments, titles, experiment_title)
 
 

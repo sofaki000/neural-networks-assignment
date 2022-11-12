@@ -13,7 +13,24 @@ https://www.learndatasci.com/tutorials/convolutional-neural-networks-image-class
 
 
 11/10
-45min
+45min+45
+
+
+11/11
+time: 1h,1h,45min,1
+Samplers : https://towardsdatascience.com/pytorch-basics-sampling-samplers-2a0f29f0bf2a
+https://pytorch.org/docs/stable/optim.html#how-to-use-an-optimizer
+https://pytorch.org/docs/stable/generated/torch.optim.SGD.html#torch.optim.SGD
+https://analyticsindiamag.com/ultimate-guide-to-pytorch-optimizers/
+https://towardsdatascience.com/this-thing-called-weight-decay-a7cd4bcfccab
+https://mlfromscratch.com/neural-networks-explained/#/
+https://mlfromscratch.com/optimizers-explained/#stochastic-gradient-descent
+https://programmathically.com/weight-decay-in-neural-networks/
+https://mlfromscratch.com/optimizers-explained/#/
+https://towardsdatascience.com/learning-rate-schedules-and-adaptive-learning-rate-methods-for-deep-learning-2c8f433990d1
+
+
+12/11
 TODO:
 1. mhpws to encoding den einai kalo kai thelei kanena me embedding?opws onehotencoding?
 TSEKARE DIFFERENT ENCODINGS!!
