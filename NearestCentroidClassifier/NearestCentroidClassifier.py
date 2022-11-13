@@ -3,8 +3,8 @@ import torchvision
 from sklearn.model_selection import RepeatedStratifiedKFold, cross_val_score, GridSearchCV
 from sklearn.preprocessing import LabelEncoder
 
-from NearestNeighbor.NearestNeighborClassifierImpl2 import load_datasets
-from data_utilities import load_train_and_test_data, load_test_data
+from NearestNeighbor.data_handler import load_datasets
+from data_utilities import  load_test_data
 from sklearn.neighbors import NearestCentroid
 from sklearn.metrics import classification_report
 from numpy import mean, std, arange
@@ -14,10 +14,12 @@ experiments_file_name = "nearest_centroid_experiments_sklearn.txt"
 
 start = timer()
 # X_train, y_train, X_test, y_test =  load_train_and_test_data(encoder = LabelEncoder, get_chunks=40)
-X_train, y_train, X_test, y_test = load_test_data(encoder=LabelEncoder)
+# X_train, y_train, X_test, y_test = load_test_data(encoder=LabelEncoder)
 
-X_train1, y_train1, X_test1, y_test1 = load_datasets()
-
+X_train, y_train, X_test, y_test = load_datasets()
+# # # we flatten the dataset
+X_train = X_train.reshape(-1,3072)
+X_test = X_test.reshape(-1,3072)
 
 def print_and_save_results(training_test_score, test_set_score,report ):
      data_used = f'Training data shape:{X_train.shape}\nTraining labels shape:{y_train.shape}\nTest data shape:{X_test.shape}\nTest labels' \

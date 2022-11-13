@@ -36,11 +36,16 @@ https://github.com/timgaripov/swa
 Averaging Weights Leads to Wider Optima and Better Generalization,Pavel Izmailov
 
 13/11
-time: 45m,47m ,1.15
-https://www.datacamp.com/tutorial/k-nearest-neighbor-classification-scikit-learn
+time: 45m,47m ,1.15,40m = 3h 45m sto knn
+k centroi: 30m,35m, general:43m
+
+Source: https://blog.paperspace.com/writing-cnns-from-scratch-in-pytorch/#introduction
+Source: https://pytorch.org/docs/stable/optim.html#how-to-use-an-optimizer
+https://www.datacamp.com/tutorial/k-nearest-neighbor-classification-scikit-learn -> check their cnn
 https://www.datacamp.com/tutorial/principal-component-analysis-in-python
 https://builtin.com/data-science/step-step-explanation-principal-component-analysis
 https://www.datacamp.com/tutorial/feature-selection-python
+https://en.wikipedia.org/wiki/Cross-validation_(statistics)
 
 TODO:
 1. mhpws to encoding den einai kalo kai thelei kanena me embedding?opws onehotencoding?
