@@ -13,11 +13,11 @@ https://www.learndatasci.com/tutorials/convolutional-neural-networks-image-class
 
 
 11/10
-45min+45
+45min+45min
 
 
 11/11
-time: 1h,1h,45min,1
+time: 1h,1h,45min,1h
 Samplers : https://towardsdatascience.com/pytorch-basics-sampling-samplers-2a0f29f0bf2a
 https://pytorch.org/docs/stable/optim.html#how-to-use-an-optimizer
 https://pytorch.org/docs/stable/generated/torch.optim.SGD.html#torch.optim.SGD
@@ -31,6 +31,17 @@ https://towardsdatascience.com/learning-rate-schedules-and-adaptive-learning-rat
 
 
 12/11
+times: 1h, 50m,15m,50=3h
+https://github.com/timgaripov/swa
+Averaging Weights Leads to Wider Optima and Better Generalization,Pavel Izmailov
+
+13/11
+time: 45m,47m ,1.15
+https://www.datacamp.com/tutorial/k-nearest-neighbor-classification-scikit-learn
+https://www.datacamp.com/tutorial/principal-component-analysis-in-python
+https://builtin.com/data-science/step-step-explanation-principal-component-analysis
+https://www.datacamp.com/tutorial/feature-selection-python
+
 TODO:
 1. mhpws to encoding den einai kalo kai thelei kanena me embedding?opws onehotencoding?
 TSEKARE DIFFERENT ENCODINGS!!

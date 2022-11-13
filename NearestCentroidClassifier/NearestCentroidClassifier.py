@@ -1,6 +1,9 @@
 import torch
+import torchvision
 from sklearn.model_selection import RepeatedStratifiedKFold, cross_val_score, GridSearchCV
 from sklearn.preprocessing import LabelEncoder
+
+from NearestNeighbor.NearestNeighborClassifierImpl2 import load_datasets
 from data_utilities import load_train_and_test_data, load_test_data
 from sklearn.neighbors import NearestCentroid
 from sklearn.metrics import classification_report
@@ -12,6 +15,9 @@ experiments_file_name = "nearest_centroid_experiments_sklearn.txt"
 start = timer()
 # X_train, y_train, X_test, y_test =  load_train_and_test_data(encoder = LabelEncoder, get_chunks=40)
 X_train, y_train, X_test, y_test = load_test_data(encoder=LabelEncoder)
+
+X_train1, y_train1, X_test1, y_test1 = load_datasets()
+
 
 def print_and_save_results(training_test_score, test_set_score,report ):
      data_used = f'Training data shape:{X_train.shape}\nTraining labels shape:{y_train.shape}\nTest data shape:{X_test.shape}\nTest labels' \
@@ -38,7 +44,6 @@ def run_nearest_centroid_sklearn():
      # Printing Accuracy on Training and Test sets
      training_test_score = f"Training Set Score : {model.score(X_train, y_train) * 100} %"
      test_set_score = f"Test Set Score : {model.score(X_test, y_test) * 100} %"
-
      # Printing classification report of classifier on the test set set data
      report = f"Model Classification Report : \n{classification_report(y_test, model.predict(X_test))}\n"
      return (training_test_score, test_set_score,report)
