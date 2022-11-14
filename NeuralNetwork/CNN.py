@@ -7,7 +7,7 @@ import torch.nn.functional as F
 import torch.optim as optim
 from sklearn.preprocessing import OneHotEncoder
 from Dataset import Dataset
-from dataHandler import get_raw_data
+from preprocessing_data_utilities import get_raw_data
 from plot_utilities import save_multiple_plots_for_different_experiments
 
 if __name__ == '__main__':

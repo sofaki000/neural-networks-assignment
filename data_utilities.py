@@ -2,7 +2,7 @@
 import numpy as np
 import pandas as pd
 from sklearn.preprocessing import OneHotEncoder
-from utilities import extract_mfcc
+from noise_utilities import extract_mfcc
 import warnings
 import os
 warnings.filterwarnings('ignore')

@@ -1,5 +1,5 @@
 import numpy as np
-from dataHandler import get_raw_data, get_normalized_data, get_standarized_data, get_rescaled_data, \
+from preprocessing_data_utilities import get_raw_data, get_normalized_data, get_standarized_data, get_rescaled_data, \
     get_robustly_scaled_data
 
 experiments_file_name="nearest_centroid_experiments_impl.txt"

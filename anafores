@@ -37,7 +37,7 @@ Averaging Weights Leads to Wider Optima and Better Generalization,Pavel Izmailov
 
 13/11
 time: 45m,47m ,1.15,40m = 3h 45m sto knn
-k centroi: 30m,35m, general:43m
+k centroi: 30m,35m, general:43m = 5.30
 
 Source: https://blog.paperspace.com/writing-cnns-from-scratch-in-pytorch/#introduction
 Source: https://pytorch.org/docs/stable/optim.html#how-to-use-an-optimizer
