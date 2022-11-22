@@ -28,10 +28,10 @@ def save_model_train_and_test_loss_plot(train_losses, test_losses, title, file_n
     fig, ax = plt.subplots( nrows=1, ncols=1)
     ax.plot(train_losses,color='r', label='Train loss')
     ax.plot(test_losses,color='g', label='Test loss')
-    fig.suptitle(title, fontsize=20)
-    plt.xlabel('Epochs', fontsize=16)
+    fig.suptitle(title, fontsize=10)
+    plt.xlabel('Epochs', fontsize=10)
     plt.legend()
-    plt.ylabel('Losses', fontsize=16)
+    plt.ylabel('Losses', fontsize=10)
     fig.savefig(file_name)
 
 def save_multiple_plots_for_two_experiments(experiments_mean_losses, titles, file_name):

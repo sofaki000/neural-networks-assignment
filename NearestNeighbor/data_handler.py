@@ -52,15 +52,15 @@ def get_dataset_for_developing(transform):
     new_dataset = Subset(ds, dog_indices + deer_indices + airplane_indices+ automobile_indices+ship_indices+truck_indices+bird_indices+frog_indices+horse_indices+cat_indices)
     return new_dataset
 
-def load_datasets():
+def load_datasets(filepath='./data'):
     # Transforms for the image.
     # transform = transforms.Compose([
     #     transforms.Grayscale(), transforms.Resize((32, 32)),  transforms.ToTensor(), transforms.Normalize((0.5,), (0.5,)), nn.Flatten()
     # ])
     transform = transforms.Compose([ transforms.Resize((32, 32)),  transforms.ToTensor(), transforms.Normalize((0 ,), (1,)), nn.Flatten()])
 
-    trainset = torchvision.datasets.CIFAR10(root='./data', train=True, transform=transform, download=False)
-    testset = torchvision.datasets.CIFAR10(root='./data', train=False, transform=transform, download=False)
+    trainset = torchvision.datasets.CIFAR10(root=filepath, train=True, transform=transform, download=False)
+    testset = torchvision.datasets.CIFAR10(root=filepath, train=False, transform=transform, download=False)
 
     # trainset= get_dataset_for_developing(transform)
     # testset = get_dataset_for_developing(transform)
