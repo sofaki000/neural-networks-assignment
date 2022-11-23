@@ -1,10 +1,6 @@
-import numpy as np
 from keras import regularizers
-from keras.callbacks import Callback, EarlyStopping, ModelCheckpoint
 from keras.optimizers import RMSprop
 from keras.regularizers import l2
-from matplotlib import pyplot as plt
-from sklearn.decomposition import PCA
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, BatchNormalization
 import tensorflow as tf

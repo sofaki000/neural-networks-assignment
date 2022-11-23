@@ -11,12 +11,11 @@
 
 
 # Importing libraries
-import matplotlib.pyplot as plt
 import numpy as np
 import math
 
 # Using Numpy to create an array X
-from plot_utilities import save_model_train_and_test_loss_plot
+from utilities.plot_utilities import save_model_train_and_test_loss_plot
 
 X = np.arange(0, math.pi * 2, 0.05)
 

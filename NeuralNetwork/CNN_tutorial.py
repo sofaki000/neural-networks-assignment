@@ -1,5 +1,4 @@
 import torch
-import torchvision
 import matplotlib.pyplot as plt
 import numpy as np
 import torchvision.transforms as transforms
@@ -7,7 +6,7 @@ import torch.optim as optim
 import torch.nn as nn
 import torch.nn.functional as F
 
-from plot_utilities import save_multiple_plots_for_different_experiments
+from utilities.plot_utilities import save_multiple_plots_for_different_experiments
 
 
 class Net(nn.Module):

@@ -1,14 +1,11 @@
-import math
 from collections import Counter
 import torch
 import torchvision.transforms as transforms
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
-from sklearn.preprocessing import OneHotEncoder
-from Dataset import Dataset
-from preprocessing_data_utilities import get_raw_data
-from plot_utilities import save_multiple_plots_for_different_experiments
+from data_utilities.preprocessing_data_utilities import get_raw_data
+from utilities.plot_utilities import save_multiple_plots_for_different_experiments
 
 if __name__ == '__main__':
 
