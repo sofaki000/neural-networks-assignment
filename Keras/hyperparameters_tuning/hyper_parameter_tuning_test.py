@@ -6,10 +6,8 @@ from data_utilities.sre_dataset_utilities import get_transformed_data
 import tensorflow as tf
 from tensorflow import keras
 import keras_tuner as kt
-from utilities.plot_utilities import save_model_train_and_test_loss_plot, save_model_train_and_test_accuracy_plot
-from utilities.train_utilities import get_callbacks_for_training
 
-x_train, y_train, x_test, y_test = get_transformed_data(3)
+x_train, y_train, x_test, y_test = get_transformed_data(0)
 
 batch_size = 128
 epochs_to_train = 300
@@ -46,24 +44,12 @@ is {best_hps.get('learning_rate')}.
 # # Build the model with the optimal hyperparameters and train it on the data for 50 epochs
 h_model = tuner.hypermodel.build(best_hps)
 h_model.summary()
-
-# train model
-training_callbacks = get_callbacks_for_training("hypertuned_model")
-history = h_model.fit(x_train, y_train, batch_size=batch_size, epochs=epochs_to_train, verbose=1, validation_data=(x_test, y_test), callbacks=training_callbacks)
-
-# evaluate the model
-_, train_acc = h_model.evaluate(x_train, y_train, verbose=0)
-_, test_acc = h_model.evaluate(x_test , y_test.astype("float32"))
-
-print('Train: %.3f, Test: %.3f' % (train_acc, test_acc))
-best_lr  = best_hps.get('learning_rate')
-hidden_layers  = best_hps.get('units')
-title_for_loss_plot = f'Train acc:{train_acc:.3f},Test acc:{test_acc:.3f},lr:{best_lr}, hidden layer neurons:{hidden_layers}, Epochs:{training_callbacks[0].stopped_epoch}'
-title_for_acc_plot = f'lr:{best_lr}, hidden layer neurons:{hidden_layers}, Epochs:{training_callbacks[0].stopped_epoch}'
+best_model_name = "hypertuned_model"
 
 file_name_loss = 'results/hyperparameter_tuned_model_loss'
 file_name_acc = 'results/hyperparameter_tuned_model_acc'
-val_accuracy = history.history['val_accuracy']
-accuracy = history.history['accuracy']
-save_model_train_and_test_loss_plot(history.history['loss'], history.history['val_loss'], title_for_loss_plot, file_name_loss)
-save_model_train_and_test_accuracy_plot(accuracy, val_accuracy,title_for_acc_plot, file_name_acc )
+best_lr  = best_hps.get('learning_rate')
+hidden_layers  = best_hps.get('units')
+# title_for_loss_plot = f'Train acc:{train_acc:.3f},Test acc:{test_acc:.3f},lr:{best_lr}, hidden layer neurons:{hidden_layers}, Epochs:{training_callbacks[0].stopped_epoch}'
+# title_for_acc_plot = f'lr:{best_lr}, hidden layer neurons:{hidden_layers}, Epochs:{training_callbacks[0].stopped_epoch}'
+
