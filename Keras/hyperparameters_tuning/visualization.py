@@ -10,16 +10,10 @@ from data_utilities.sre_dataset_utilities import get_transformed_data
 from torch.utils.tensorboard import SummaryWriter
 
 experiments_folder = 'models_comparison'
-# default `log_dir` is "runs" - we'll be more specific here
 writer = SummaryWriter('runs/sre_experiment1')
 
-x_train, y_train, x_test, y_test = get_transformed_data(2)
-output_classes = 6
-# Print the shapes of the data.
-print(x_train.shape[0])
-print(y_train.shape)
-print(x_test.shape[0])
-print(y_test.shape)
+x_train, y_train, x_test, y_test = get_transformed_data(4)
+output_classes = 7
 def build_model(hp):
     inputs = keras.Input(shape=(40,))
     # Model type can be MLP or CNN.
@@ -47,8 +41,8 @@ def build_model(hp):
     outputs = Dense(units=output_classes, activation="softmax")(x)
     model = keras.Model(inputs=inputs, outputs=outputs)
     # Compile the model.
-    hp_learning_rate = hp.Choice('learning_rate', values=[1e-2, 1e-3, 1e-4])
-    model.compile(loss="categorical_crossentropy", metrics=["accuracy"], optimizer=keras.optimizers.Adam(learning_rate=hp_learning_rate))
+    # hp_learning_rate = hp.Choice('learning_rate', values=[1e-2, 1e-3, 1e-4])
+    model.compile(loss="categorical_crossentropy", metrics=["accuracy"], optimizer=keras.optimizers.Adam(learning_rate=1e-3))
     return model
 
 
@@ -70,11 +64,12 @@ model.summary()
 
 train_size = (x_train.shape[0])
 test_size = (x_test.shape[0])
+
 ##################################################################### Random search algorithm ####################################################################
-random_search_tuner = perform_random_search_on_model(build_model,x_train, y_train)
+random_search_tuner = perform_random_search_on_model(build_model,x_train, y_train,x_test, y_test)
 model_from_random_search, best_hp_rs = get_model_with_best_hyperparameters(random_search_tuner)
 # getting hyperparameters for printing
-best_lr  = best_hp_rs.get('learning_rate')
+best_lr  = 1e-3# best_hp_rs.get('learning_rate')
 model_type  = best_hp_rs.get('model_type')
 
 best_model_name_rs = "models/best_model_from_random_search"
@@ -86,12 +81,12 @@ train_and_save_results(model_from_random_search, best_model_name_rs,file_name_lo
 
 print('---------------------------------------------------------------- done from random search ----------------------------------------------------------')
 #################################################################### Hyperband algorithm ####################################################################
-hyperband_tuner = perform_hyperband_tuning_on_model(build_model,x_train, y_train)
+hyperband_tuner = perform_hyperband_tuning_on_model(build_model,x_train, y_train,x_test, y_test)
 model_from_hyperband ,best_hp_hb= get_model_with_best_hyperparameters(hyperband_tuner)
 
 
 # getting hyperparameters for printing
-best_lr_hb  = best_hp_hb.get('learning_rate')
+best_lr_hb  = 1e-3#best_hp_hb.get('learning_rate')
 model_type_hb  = best_hp_hb.get('model_type')
 title_for_loss_plot_hb =f'Best model from Hyperband:lr:{best_lr_hb}, model type:{model_type_hb}, train size:{train_size}, test size:{test_size}'
 title_for_acc_plot_hb =f'Best model from Hyperband:lr:{best_lr_hb}, model type:{model_type_hb}, train size:{train_size}, test size:{test_size}'
@@ -105,7 +100,7 @@ train_and_save_results(model_from_hyperband, best_model_name_hb,file_name_loss_h
 print('---------------------------------------------------------------- done from hyperband ----------------------------------------------------------')
 #################################################################### default config ####################################################################
 
-default_model = get_model_with_default_config()
+default_model = get_model_with_default_config(input_size=40, output_classes=output_classes)
 lr = 1e-3
 title_for_loss_default_model =f'lr:{lr}, train size:{train_size}, test size:{test_size}'
 title_for_acc_plot_default_model =f'lr:{lr}, train size:{train_size}, test size:{test_size}'

@@ -47,6 +47,8 @@ def loadTestSet(load_dataset=0):
         path =  f'{data_path}test_data2'
     elif load_dataset==3:
         path =  f'{data_path}test_data3'
+    elif load_dataset==4:
+        path =  f'{data_path}TESS Toronto emotional speech set data'
 
     if os.path.exists(path) is False:
         raise Exception("Can't find data")
@@ -59,8 +61,8 @@ def loadTestSet(load_dataset=0):
             label = filename.split('_')[-1]
             label = label.split('.')[0]
             labels.append(label.lower())
-        if len(paths) == 2:
-            break
+        # if len(paths) == 2:
+        #     break
     print('Dataset is Loaded')
     return paths, labels
 
@@ -87,10 +89,10 @@ def loadDataFromPathAndLabels(paths, labels, encoder=OneHotEncoder ):
         actual_labels = actual_labels.toarray()
     data_split = (int)(samples_size * 0.7)
 
-    X_test = input_features[:data_split]
-    y_test = actual_labels[:data_split]
-    X_train = input_features[data_split:]
-    y_train = actual_labels[data_split:]
+    X_train = input_features[:data_split]
+    y_train = actual_labels[:data_split]
+    X_test = input_features[data_split:]
+    y_test = actual_labels[data_split:]
     return X_train, y_train, X_test, y_test
 
 
