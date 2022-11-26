@@ -41,13 +41,14 @@ def get_model_with_best_hyperparameters(tuner):
 
 def train_and_save_results(model_to_train, best_model_name,file_name_loss, file_name_acc, title_for_loss_plot, title_for_acc_plot,x_train, y_train,x_test , y_test):
   # train model
-  epochs_to_train = 30
+  epochs_to_train = 50
   batch_size = 128
   training_callbacks = get_callbacks_for_training(best_model_name)
 
   stopped_at_epoch = training_callbacks[0].stopped_epoch
   if stopped_at_epoch==0:
       stopped_at_epoch= epochs_to_train
+
   title_for_loss_plot =  f'{title_for_loss_plot},ep:{stopped_at_epoch}'
   title_for_acc_plot = f'{title_for_acc_plot},ep:{stopped_at_epoch}'
 
@@ -59,9 +60,13 @@ def train_and_save_results(model_to_train, best_model_name,file_name_loss, file_
 
   val_accuracy = history.history['val_accuracy']
   accuracy = history.history['accuracy']
-  save_model_train_and_test_loss_plot(history.history['loss'], history.history['val_loss'], title_for_loss_plot, file_name_loss)
-  save_model_train_and_test_accuracy_plot(accuracy, val_accuracy,title_for_acc_plot, file_name_acc )
-  save_model_train_and_test_accuracy_plot(accuracy, val_accuracy,title_for_acc_plot, file_name_acc )
+  val_loss = history.history['val_loss']
+  loss = history.history['loss']
+
+  # epochs_index =   [i for i in range(epochs_to_train)]
+  save_model_train_and_test_loss_plot(loss, val_loss, title_for_loss_plot, file_name_loss )
+  save_model_train_and_test_accuracy_plot(accuracy, val_accuracy,title_for_acc_plot, file_name_acc)
+
 
 
 

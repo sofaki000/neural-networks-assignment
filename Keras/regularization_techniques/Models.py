@@ -5,14 +5,13 @@ from keras.models import Sequential
 from keras.layers import Dense, Dropout, BatchNormalization
 import tensorflow as tf
 
-def get_model(num_classes):
+def get_model(input_features, num_classes):
     model = Sequential()
-    model.add(Dense(1024, activation='relu', input_shape=(99,)))
+    model.add(Dense(1024, activation='relu', input_shape=(input_features,)))
     model.add(Dense(1024, activation='relu'))
     model.add(Dense(512, activation='relu'))
     model.add(Dense(256, activation='relu'))
     model.add(Dense(num_classes, activation='softmax'))
-
     print(model.summary())
     model.compile(loss='categorical_crossentropy', optimizer=RMSprop(),  metrics=['accuracy'])
 
@@ -20,24 +19,24 @@ def get_model(num_classes):
 
 
 
-def get_model_with_batch_normalization_and_weight_decay(num_classes, optimizer = RMSprop, lr =0.001):
+def get_model_with_batch_normalization_and_weight_decay(input_features, num_classes, optimizer = RMSprop, lr =0.001, weight_decay=0.01):
     model = Sequential()
-    model.add(Dense(1024,   kernel_regularizer=l2(0.01), activation='relu', input_shape=(99,)))
+    model.add(Dense(1024,   kernel_regularizer=l2(weight_decay), activation='relu', input_shape=(input_features,)))
     model.add(BatchNormalization())
-    model.add(Dense(1024,  kernel_regularizer=l2(0.01), activation='relu'))
+    model.add(Dense(1024,  kernel_regularizer=l2(weight_decay), activation='relu'))
     model.add(BatchNormalization())
-    model.add(Dense(512, kernel_regularizer=l2(0.01),  activation='relu'))
+    model.add(Dense(512, kernel_regularizer=l2(weight_decay),  activation='relu'))
     model.add(BatchNormalization())
-    model.add(Dense(256, kernel_regularizer=l2(0.01),  activation='relu'))
+    model.add(Dense(256, kernel_regularizer=l2(weight_decay),  activation='relu'))
     model.add(Dense(num_classes, activation='softmax'))
 
     print(model.summary())
     model.compile(loss='categorical_crossentropy', optimizer= optimizer(learning_rate=lr), metrics=['accuracy'])
     return model
 
-def get_model_with_weight_decay(num_classes):
+def get_model_with_weight_decay(input_features,num_classes):
     model = Sequential()
-    model.add(Dense(1024,   kernel_regularizer=l2(0.01), activation='relu', input_shape=(99,)))
+    model.add(Dense(1024,   kernel_regularizer=l2(0.01), activation='relu', input_shape=(input_features,)))
     model.add(Dense(1024,  kernel_regularizer=l2(0.01), activation='relu'))
     model.add(Dense(512, kernel_regularizer=l2(0.01),  activation='relu'))
     model.add(Dense(256, kernel_regularizer=l2(0.01),  activation='relu'))
@@ -47,27 +46,27 @@ def get_model_with_weight_decay(num_classes):
     model.compile(loss='categorical_crossentropy', optimizer=RMSprop(), metrics=['accuracy'])
     return model
 
-def get_model_with_dropout_in_hidden_layers(num_classes):
+def get_model_with_dropout_in_hidden_layers(input_features,num_classes, dropout):
     model = Sequential()
-    model.add(Dense(1024,   kernel_regularizer=l2(0.01), activation='relu', input_shape=(99,)))
-    model.add(Dropout(.2))
+    model.add(Dense(1024,   kernel_regularizer=l2(0.01), activation='relu', input_shape=(input_features,)))
+    model.add(Dropout(dropout))
     model.add(Dense(1024,  kernel_regularizer=l2(0.01), activation='relu'))
-    model.add(Dropout(.2))
+    model.add(Dropout(dropout))
     model.add(Dense(512, kernel_regularizer=l2(0.01),  activation='relu'))
-    model.add(Dropout(.2))
+    model.add(Dropout(dropout))
     model.add(Dense(256, kernel_regularizer=l2(0.01),  activation='relu'))
-    model.add(Dropout(.2))
+    model.add(Dropout(dropout))
     model.add(Dense(num_classes, activation='softmax'))
 
     print(model.summary())
     model.compile(loss='categorical_crossentropy', optimizer=RMSprop(), metrics=['accuracy'])
-
     return model
 
-def get_model_with_l1_regularizer(num_classes):
+
+def get_model_with_l1_regularizer(input_features,num_classes):
     model = Sequential()
     regularizer= regularizers.L1(0.01)
-    model.add(Dense(1024,   kernel_regularizer=regularizer, activation='relu', input_shape=(99,)))
+    model.add(Dense(1024,   kernel_regularizer=regularizer, activation='relu', input_shape=(input_features,)))
     model.add(Dense(1024,  kernel_regularizer=regularizer, activation='relu'))
     model.add(Dense(512, kernel_regularizer=regularizer,  activation='relu'))
     model.add(Dense(256, kernel_regularizer=regularizer,  activation='relu'))
@@ -78,16 +77,14 @@ def get_model_with_l1_regularizer(num_classes):
 
     return model
 
-def get_model_with_initialized_weights(num_classes):
+def get_model_with_initialized_weights(input_features,num_classes):
     initializer = tf.keras.initializers.GlorotNormal(seed=None)
     model = Sequential()
-    model.add(Dense(1024, kernel_regularizer=l2(0.01), kernel_initializer=initializer, activation='relu', input_shape=(99,)))
+    model.add(Dense(1024, kernel_regularizer=l2(0.01), kernel_initializer=initializer, activation='relu', input_shape=(input_features,)))
     model.add(Dense(1024, kernel_regularizer=l2(0.01), kernel_initializer=initializer,activation='relu'))
     model.add(Dense(512, kernel_regularizer=l2(0.01),kernel_initializer=initializer, activation='relu'))
     model.add(Dense(256, kernel_regularizer=l2(0.01),kernel_initializer=initializer, activation='relu'))
     model.add(Dense(num_classes, activation='softmax'))
-
     print(model.summary())
     model.compile(loss='categorical_crossentropy', optimizer=RMSprop(), metrics=['accuracy'])
-
     return model

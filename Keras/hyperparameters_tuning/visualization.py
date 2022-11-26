@@ -1,21 +1,30 @@
 import numpy as np
 import keras_tuner
 from keras.layers import Flatten, Dense, Dropout, Conv1D, MaxPooling1D
+from sklearn.decomposition import PCA
 from tensorflow import keras
 import tensorflow as tf
 from Keras.hyperparameters_tuning.hyperparameters_tuning_utilities import perform_random_search_on_model, \
     perform_hyperband_tuning_on_model, \
     get_model_with_best_hyperparameters, train_and_save_results, get_model_with_default_config
 from data_utilities.sre_dataset_utilities import get_transformed_data
-from torch.utils.tensorboard import SummaryWriter
 
 experiments_folder = 'models_comparison'
-writer = SummaryWriter('runs/sre_experiment1')
 
 x_train, y_train, x_test, y_test = get_transformed_data(4)
 output_classes = 7
+use_pca = True
+
+if use_pca:
+    pca = PCA(0.9)
+    x_train = pca.fit_transform(x_train)
+    x_test = pca.transform(x_test)
+    input_features = 16
+else:
+    input_features = 40
+
 def build_model(hp):
-    inputs = keras.Input(shape=(40,))
+    inputs = keras.Input(shape=(input_features,))
     # Model type can be MLP or CNN.
     model_type = hp.Choice("model_type", ["mlp", "cnn"])
     x = inputs
@@ -23,14 +32,11 @@ def build_model(hp):
         x = Flatten()(x)
         # Number of layers of the MLP is a hyperparameter.
         for i in range(hp.Int("mlp_layers", 1, 3)):
-            # Number of units of each layer are
-            # different hyperparameters with different names.
             x = Dense( units=hp.Int(f"units_{i}", 32, 128, step=32), activation="relu")(x)
     else:
-        # Number of layers of the CNN is also a hyperparameter.
         x = tf.expand_dims(x, axis=-1)
         for i in range(hp.Int("cnn_layers", 1, 3)):
-            x = Conv1D(hp.Int(f"filters_{i}", 32, 128, step=32), kernel_size=3,  activation="relu")(x)
+            x = Conv1D(hp.Int(f"filters_{i}", 32, 128, step=32), kernel_size=1,  activation="relu")(x)
             x = MaxPooling1D(pool_size=2)(x)
         x = Flatten()(x)
 
@@ -40,8 +46,6 @@ def build_model(hp):
 
     outputs = Dense(units=output_classes, activation="softmax")(x)
     model = keras.Model(inputs=inputs, outputs=outputs)
-    # Compile the model.
-    # hp_learning_rate = hp.Choice('learning_rate', values=[1e-2, 1e-3, 1e-4])
     model.compile(loss="categorical_crossentropy", metrics=["accuracy"], optimizer=keras.optimizers.Adam(learning_rate=1e-3))
     return model
 
@@ -51,21 +55,18 @@ hp = keras_tuner.HyperParameters()
 hp.values["model_type"] = "cnn"
 # Build the model using the `HyperParameters`.
 model = build_model(hp)
-# Test if the model runs with our data.
-model(x_train[:100])
 # Print a summary of the model.
 model.summary()
 
-# # Do the same for MLP model.
+# Do the same for MLP model.
 hp.values["model_type"] = "mlp"
 model = build_model(hp)
-model(x_train[:100])
 model.summary()
 
 train_size = (x_train.shape[0])
 test_size = (x_test.shape[0])
 
-##################################################################### Random search algorithm ####################################################################
+##################### Random search algorithm #####################
 random_search_tuner = perform_random_search_on_model(build_model,x_train, y_train,x_test, y_test)
 model_from_random_search, best_hp_rs = get_model_with_best_hyperparameters(random_search_tuner)
 # getting hyperparameters for printing
@@ -79,8 +80,8 @@ title_for_loss_plot =f'Best model from random search:lr:{best_lr}, model type:{m
 title_for_acc_plot =f'Best model from random search:lr:{best_lr}, model type:{model_type}, train size:{train_size}, test size:{test_size}'
 train_and_save_results(model_from_random_search, best_model_name_rs,file_name_loss, file_name_acc, title_for_loss_plot, title_for_acc_plot,x_train, y_train, x_test, y_test )
 
-print('---------------------------------------------------------------- done from random search ----------------------------------------------------------')
-#################################################################### Hyperband algorithm ####################################################################
+print('-- done from random search --')
+##################### Hyperband algorithm #####################
 hyperband_tuner = perform_hyperband_tuning_on_model(build_model,x_train, y_train,x_test, y_test)
 model_from_hyperband ,best_hp_hb= get_model_with_best_hyperparameters(hyperband_tuner)
 
@@ -97,10 +98,10 @@ file_name_acc_hb = f'{experiments_folder}/acc_hyperband_model'
 train_and_save_results(model_from_hyperband, best_model_name_hb,file_name_loss_hb, file_name_acc_hb, title_for_loss_plot_hb, title_for_acc_plot_hb,x_train, y_train, x_test, y_test )
 
 
-print('---------------------------------------------------------------- done from hyperband ----------------------------------------------------------')
-#################################################################### default config ####################################################################
+print('-- done from hyperband --')
+########## default config ##############
 
-default_model = get_model_with_default_config(input_size=40, output_classes=output_classes)
+default_model = get_model_with_default_config(input_size=input_features, output_classes=output_classes)
 lr = 1e-3
 title_for_loss_default_model =f'lr:{lr}, train size:{train_size}, test size:{test_size}'
 title_for_acc_plot_default_model =f'lr:{lr}, train size:{train_size}, test size:{test_size}'
