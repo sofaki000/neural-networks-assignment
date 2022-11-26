@@ -5,7 +5,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 from data_utilities.preprocessing_data_utilities import get_raw_data
-from utilities.plot_utilities import save_multiple_plots_for_different_experiments
+from model_utilities.utilities import save_multiple_plots_for_different_experiments
 
 if __name__ == '__main__':
 

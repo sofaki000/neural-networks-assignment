@@ -6,8 +6,7 @@ from matplotlib import pyplot as plt
 def save_multiple_plots_for_different_experiments(experiments_mean_losses, titles, file_name):
     file_name = strftime(f"{file_name}Date%Y_%m_%d_Time%H_%M_%S", gmtime())
     figure, axis = plt.subplots(2, 2,figsize=(7,7), gridspec_kw={
-                           'width_ratios': [3, 3],
-                           'height_ratios': [3, 3], 'wspace': 0.4,  'hspace': 0.4})
+                           'width_ratios': [3, 3], 'height_ratios': [3, 3], 'wspace': 0.4,  'hspace': 0.4})
     k = len(experiments_mean_losses) - 1
     figure.tight_layout()
     for i in range(2):
@@ -22,6 +21,14 @@ def save_multiple_plots_for_different_experiments(experiments_mean_losses, title
 
     figure.savefig(f'{file_name}.png')
 
+
+def save_model_train_metric(metric, title, file_name, label):
+    fig, ax = plt.subplots(nrows=1, ncols=1)
+    fig.suptitle(title, fontsize=7)
+    plt.xlabel('Epochs', fontsize=10)
+    ax.plot(metric, color='g', label=label)
+    plt.legend()
+    fig.savefig(file_name)
 
 
 def save_model_train_and_test_metric(metric, train_metric , test_metric, title, file_name ):

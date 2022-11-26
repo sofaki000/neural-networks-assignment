@@ -1,139 +1,91 @@
 import torch
-import matplotlib.pyplot as plt
-import numpy as np
-import torchvision.transforms as transforms
 import torch.optim as optim
 import torch.nn as nn
-import torch.nn.functional as F
-
-from utilities.plot_utilities import save_multiple_plots_for_different_experiments
-
-
-class Net(nn.Module):
-    def __init__(self):
-        super().__init__()
-        self.conv1 = nn.Conv2d(3, 6, 5)
-        self.pool = nn.MaxPool2d(2, 2)
-        self.conv2 = nn.Conv2d(6, 16, 5)
-        self.fc1 = nn.Linear(16 * 5 * 5, 120)
-        self.fc2 = nn.Linear(120, 84)
-        self.fc3 = nn.Linear(84, 10)
-
-    def forward(self, x):
-        x = self.pool(F.relu(self.conv1(x)))
-        x = self.pool(F.relu(self.conv2(x)))
-        x = torch.flatten(x, 1)  # flatten all dimensions except batch
-        x = F.relu(self.fc1(x))
-        x = F.relu(self.fc2(x))
-        x = self.fc3(x)
-        return x
-
+from NeuralNetwork import config
+from NeuralNetwork.model import Conv2dModel
+from data_utilities.cifar10_utilities import get_train_cifar_data
+from torch.utils.data import Subset
+import time
+from utilities.model_utilities import save_model_on_path, test
+from utilities.plot_utilities import save_model_train_metric
 
 if __name__ == '__main__':
-    from torchvision.datasets import CIFAR10
-    from torch.utils.data import Subset
 
-    # ds = CIFAR10('~/.torch/data/', train=True, download=True)
-    ds = CIFAR10('./data/', train=True, download=True)
-    dog_indices, deer_indices, other_indices = [], [], []
-    dog_idx, deer_idx = ds.class_to_idx['dog'], ds.class_to_idx['deer']
+    train_dataset, test_dataset = get_train_cifar_data()
+    trainloader = torch.utils.data.DataLoader(train_dataset, batch_size=config.batch_size, shuffle=True, num_workers=2)
+    testloader = torch.utils.data.DataLoader(test_dataset, batch_size=config.batch_size, shuffle=False, num_workers=2)
 
-    for i in range(len(ds)):
-        current_class = ds[i][1]
-        if current_class == dog_idx:
-            dog_indices.append(i)
-        elif current_class == deer_idx:
-            deer_indices.append(i)
-        else:
-            other_indices.append(i)
-    dog_indices = dog_indices[:int(0.6 * len(dog_indices))]
-    deer_indices = deer_indices[:int(0.6 * len(deer_indices))]
-    new_dataset = Subset(ds, dog_indices + deer_indices + other_indices)
-
-    transform = transforms.Compose([transforms.ToTensor(),  transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
-    print(f'Number of set: {len(dog_indices)+len(deer_indices)}')
-    batch_size = 4
-    #trainset = torchvision.datasets.CIFAR10(root='./data', train=True,  download=True, transform=transform)
-
-    trainloader = torch.utils.data.DataLoader(new_dataset, batch_size=batch_size, shuffle=True, num_workers=2)
-    #
-    # testset = torchvision.datasets.CIFAR10(root='./data', train=False,  download=True, transform=transform)
-    # testloader = torch.utils.data.DataLoader(testset, batch_size=batch_size, shuffle=False, num_workers=2)
-
+    data_size = len(trainloader)
     classes = ('plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
-    def imshow(img):
-        img = img / 2 + 0.5     # unnormalize
-        npimg = img.numpy()
-        plt.imshow(np.transpose(npimg, (1, 2, 0)))
-        plt.show()
 
-
-    # get some random training images
-    # dataiter = iter(trainloader)
-    # images, labels = next(dataiter)
-
-    # show images
-    #imshow(torchvision.utils.make_grid(images))
-    # print labels
-    #print(' '.join(f'{classes[labels[j]]:5s}' for j in range(batch_size)))
-    net = Net()
-    learning_rates = [0.1,0.01,0.001,0.0001]
+    model = Conv2dModel()
     criterion = nn.CrossEntropyLoss()
-    n_epochs = 2
-    losses_over_experiments = []
+
+    accuracy_over_epochs = []
     titles = []
-    for lr_idx in range(len(learning_rates)):
-        optimizer = optim.SGD(net.parameters(), lr=learning_rates[lr_idx])
-        losses_over_epochs = []
-        title = f'Ep:{n_epochs} lr:{learning_rates[lr_idx]} batch:{batch_size}'
-        print(title)
-        titles.append(title)
-        for epoch in range(n_epochs):  # loop over the dataset multiple times
-            running_loss = 0.0
-            for i, data in enumerate(trainloader, 0):
-                # get the inputs; data is a list of [inputs, labels]
-                inputs, labels = data
+    optimizer = optim.SGD(model.parameters(), lr=0.001)
+    loss_per_epoch = []
+    title = f'Ep:{config.n_epochs} lr:{config.lr} batch:{config.batch_size}'
+    print(title)
+    titles.append(title)
+    model.train()
 
-                # zero the parameter gradients
-                optimizer.zero_grad()
+    start_training_time = time.time()
+    for epoch in range(config.n_epochs):
+        running_loss = 0.0
+        correct_train_guess_per_epoch = 0
+        total=0
+        for i, data in enumerate(trainloader, 0):
+            # get the inputs; data is a list of [inputs, labels]
+            inputs, labels = data
+            # zero the parameter gradients
+            optimizer.zero_grad()
 
-                # forward + backward + optimize
-                outputs = net(inputs)
-                loss = criterion(outputs, labels)
-                loss.backward()
-                optimizer.step()
+            # forward + backward + optimize
+            outputs = model(inputs)
+            loss = criterion(outputs, labels)
+            loss.backward()
+            optimizer.step()
 
-                # print statistics
-                running_loss += loss.item()
-                #if i % 2000 == 1999:    # print every 2000 mini-batches
-                if i % 2 == 0:  # print every 2 mini-batches
-                    losses_over_epochs.append((running_loss / 2000))
-                    print(f'[{epoch + 1}, {i + 1:5d}] loss: {running_loss / 2000:.3f}')
-                    running_loss = 0.0
-        losses_over_experiments.append(losses_over_epochs)
-    print('Finished Training')
+            # print statistics
+            running_loss += loss.item()
 
-    experiment_title = "results/Adam/Adam_results"
-    save_multiple_plots_for_different_experiments(losses_over_experiments, titles, experiment_title)
+            # calculating train accuracy
+            _, predicted = torch.max(outputs.data, 1)
+            total += labels.size(0)
+            correct_train_guess_per_epoch += (predicted == labels).sum().item()
 
-    PATH = './cifar_net.pth'
-    torch.save(net.state_dict(), PATH)
+        # we sum up the results from the epoch we just finished
+        train_loss_per_epoch = running_loss / len(trainloader)
+        accuracy_per_epoch=100.*correct_train_guess_per_epoch/total
 
+        accuracy_over_epochs.append(accuracy_per_epoch)
+        loss_per_epoch.append(train_loss_per_epoch)
 
-    net = Net()
-    net.load_state_dict(torch.load(PATH))
-    def test(testloader):
-        correct = 0
-        total = 0
-        # since we're not training, we don't need to calculate the gradients for our outputs
-        with torch.no_grad():
-            for data in testloader:
-                images, labels = data
-                # calculate outputs by running images through the network
-                outputs = net(images)
-                # the class with the highest energy is what we choose as prediction
-                _, predicted = torch.max(outputs.data, 1)
-                total += labels.size(0)
-                correct += (predicted == labels).sum().item()
+        print(f'Epoch {epoch+1}: Train loss={train_loss_per_epoch:.3f} Accuracy:{accuracy_per_epoch:.3f}%')
 
-        print(f'Accuracy of the network on the 10000 test images: {100 * correct // total} %')
+    training_time_in_secs = time.time()- start_training_time
+    print(f'Finished Training in {training_time_in_secs}s...\nSaving model...')
+    save_model_on_path(model, config.model_name)
+
+    save_model_train_metric(loss_per_epoch,
+                            f'{config.train_loss_plot_title}, time:{training_time_in_secs}, {data_size} samples',
+                            config.train_loss_file_name,
+                            "Train Loss")
+    save_model_train_metric(accuracy_over_epochs, config.train_acc_plot_title, config.train_acc_file_name, "Train accuracy")
+
+    # reloading model
+    model = Conv2dModel()
+    model.load_state_dict(torch.load(config.model_name))
+
+    eval_losses = []
+    eval_accu = []
+
+    epochs = 10
+    for epoch in  range(config.n_epochs):
+        test_loss, accu = test(model, testloader,criterion)
+        eval_losses.append(test_loss)
+        eval_accu.append(accu)
+
+    save_model_train_metric(loss_per_epoch, config.test_loss_plot_title, config.test_loss_file_name, "Test Loss")
+    save_model_train_metric(accuracy_over_epochs, config.test_acc_plot_title, config.test_acc_file_name, "Test accuracy")

@@ -23,9 +23,7 @@ scores_from_cross_validation, cross_val_models = train_and_evaluate_new_models_f
 print('Estimated Accuracy using Cross-Validation Ensemble %.3f (%.3f)' % (mean(scores_from_cross_validation),
                                                                           std(scores_from_cross_validation)))
 # evaluate different numbers of ensembles on hold out set
-single_scores_cross_validation, ensemble_scores_cross_validation = evaluate_multiple_members(config.n_splits,
-                                                                                             cross_val_models,
-                                                                                             newX, newy)
+single_scores_cross_validation, ensemble_scores_cross_validation = evaluate_multiple_members(config.n_splits, cross_val_models, newX, newy)
 
 # plotting the results
 filename = f'{config.experiment_folder}/{config.n_splits}_fold_cross_validation'
