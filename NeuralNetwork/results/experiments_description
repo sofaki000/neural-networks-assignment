@@ -1,0 +1,4 @@
+1. intially only for 2 classes (dog, deer from cifar), 20% of whole dataset for train, 10% of whole dataset for test
+increasing batch size
+
+2. 256 batch size -> then added early stopping to see where it stops

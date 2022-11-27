@@ -61,6 +61,10 @@ https://corporatefinanceinstitute.com/resources/data-science/ensemble-methods/
 TELEIO EXPLANATION CROSS VALIDATION:
 https://machinelearningmastery.com/how-to-create-a-random-split-cross-validation-and-bagging-ensemble-for-deep-learning-in-keras/
 
+
+27/11
+https://machinelearningmastery.com/autoencoder-for-classification/ ->keras autoencoder for classification
+https://www.geeksforgeeks.org/implementing-an-autoencoder-in-pytorch/ -> pytorch autoencoder for classification
 TODO:
 1. mhpws to encoding den einai kalo kai thelei kanena me embedding?opws onehotencoding?
 TSEKARE DIFFERENT ENCODINGS!!

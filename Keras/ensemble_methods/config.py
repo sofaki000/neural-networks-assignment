@@ -8,7 +8,7 @@ test_percentage_of_data = 0.20
 model_type= 4
 
 # Saving experiment results
-experiment_folder= f'results\\ensemble_methods_model_type_{model_type}'
+experiment_folder= f'results\\ensemble_methods_model_type_{model_type}_v2'
 # saving best models names
 models_dir="models/"
 best_model_name_random_split= f"{models_dir}best_random_splits_model"

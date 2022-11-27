@@ -6,7 +6,7 @@ from tensorflow import keras
 import keras_tuner as kt
 
 from utilities.plot_utilities import save_model_train_and_test_loss_plot, save_model_train_and_test_accuracy_plot
-from utilities.train_utilities import get_callbacks_for_training
+from utilities.train_utilities_keras import get_callbacks_for_training
 
 
 def perform_random_search_on_model(build_model,x_train, y_train,x_test, y_test):

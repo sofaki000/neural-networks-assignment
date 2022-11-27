@@ -4,16 +4,16 @@ from tqdm import tqdm
 def save_model_on_path(model, path):
     torch.save(model.state_dict(), path)
 
-
-def test(model, testloader,loss_fn):
+def validate_one_epoch(model, testloader,loss_fn):
     model.eval()
     eval_losses = []
     eval_accu = []
     running_loss = 0
-    correct = 0
-    total = 0
+
     with torch.no_grad():
         for data in tqdm(testloader):
+            correct = 0
+            total = 0
             images, labels = data
             outputs = model(images)
             loss = loss_fn(outputs, labels)
@@ -23,13 +23,41 @@ def test(model, testloader,loss_fn):
             total += labels.size(0)
             correct += predicted.eq(labels).sum().item()
 
-    test_loss = running_loss / len(testloader)
-    accu = 100. * correct / total
+            test_loss = running_loss / len(testloader)
+            accu = 100. * correct / total
+
+    print('Validation Loss: %.3f | Accuracy: %.3f' % (test_loss, accu))
+    return test_loss, accu
+
+def test(model, testloader,loss_fn):
+    model.eval()
+    eval_losses = []
+    eval_accu = []
+    running_loss = 0
+
+    with torch.no_grad():
+        for data in tqdm(testloader):
+            correct = 0
+            total = 0
+
+            images, labels = data
+            outputs = model(images)
+            loss = loss_fn(outputs, labels)
+            running_loss += loss.item()
+
+            _, predicted = outputs.max(1) #same probably: torch.max(outputs.data, 1)
+            total += labels.size(0)
+            correct += predicted.eq(labels).sum().item()
+
+            test_loss = running_loss / len(testloader)
+            accu = 100. * correct / total
+            eval_accu.append(accu)
+            eval_losses.append(test_loss)
 
     # eval_losses.append(test_loss)
     # eval_accu.append(accu)
-    print('Test Loss: %.3f | Accuracy: %.3f' % (test_loss, accu))
-    return test_loss, accu
+            print('Test Loss: %.3f | Accuracy: %.3f' % (test_loss, accu))
+    return eval_losses, eval_accu
 
 
 

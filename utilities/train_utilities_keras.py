@@ -20,3 +20,4 @@ def get_callbacks_for_training_with_visualization(best_model_name,log_dir):
     tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
     cb_list = [es, mc,tensorboard_callback]
     return cb_list
+

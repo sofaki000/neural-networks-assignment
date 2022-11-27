@@ -24,6 +24,7 @@ def save_multiple_plots_for_different_experiments(experiments_mean_losses, title
 
 def save_model_train_metric(metric, title, file_name, label):
     fig, ax = plt.subplots(nrows=1, ncols=1)
+    plt.figure().clear()
     fig.suptitle(title, fontsize=7)
     plt.xlabel('Epochs', fontsize=10)
     ax.plot(metric, color='g', label=label)

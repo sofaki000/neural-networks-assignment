@@ -20,7 +20,7 @@ from numpy import array
 from numpy import argmax
 
 from Keras.ensemble_methods import config
-from utilities.train_utilities import get_callbacks_for_training
+from utilities.train_utilities_keras import get_callbacks_for_training
 
 
 def split_data_randomly(X, y, test_size=config.test_percentage_of_data):
@@ -135,8 +135,8 @@ def get_model(input_dim, output_dim):
     print(model.summary())
     model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
     return model
-
-print(get_model(2, 3).summary())
+#
+# print(get_model(2, 3).summary())
 
 def evaluate_n_members(members, n_members, testX, testy):
     # select a subset of members
