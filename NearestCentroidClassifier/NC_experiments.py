@@ -4,9 +4,7 @@ from sklearn.neighbors import NearestCentroid
 from sklearn.model_selection import train_test_split
 from sklearn.model_selection import cross_val_score, KFold
 
-from NearestNeighbor.PrincipalComponentAnalysis import get_pca_data
-from NearestNeighbor.data_handler import load_datasets
-from NearestNeighbor.feature_extraction import perform_feature_selection
+from data_utilities.cifar10_utilities import load_datasets
 
 
 def train_with_nearest_centroid(X_train, y_train, X_test, y_test):
@@ -50,7 +48,6 @@ X_train, y_train, X_test, y_test = load_datasets()
 # # # we flatten the dataset
 X_train = X_train.reshape(-1,3072)
 X_test = X_test.reshape(-1,3072)
-
 Xtrain, X_test, ytrain, ytest = train_test_split(X_train, y_train, test_size=0.15)
 
 

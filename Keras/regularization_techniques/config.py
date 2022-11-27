@@ -16,7 +16,7 @@ dropout =0.2
 use_pca = False
 
 import os
-experiment_folder= 'results\\v2\\whole_dataset'
+experiment_folder= 'results\\v2\\whole_dataset\\he_weight_initialization'
 os.makedirs(experiment_folder, exist_ok=True)
 
 #### experiments filenames and plot titles
@@ -47,10 +47,10 @@ title_loss_weight_decay= f'Weight decay={weight_decay}, loss'
 title_acc_weight_decay= f'Weight decay={weight_decay}, acc'
 
 ################## WEIGHT DECAY AND INITIALIZED WEIGHTS ######################
-file_name_loss_weight_decay_and_initialized_weights = f'{experiment_folder}/early_stopping_with_weight_decay_and_initialized_weights_loss'
-file_name_acc_weight_decay_and_initialized_weights =f'{experiment_folder}/early_stopping_with_weight_decay_and_initialized_weights_acc'
-title_loss_weight_decay_and_initialized_weights='Initialized weights loss'
-title_acc_weight_decay_and_initialized_weights='Initialized weights acc'
+file_name_loss_weight_decay_and_initialized_weights = f'{experiment_folder}/early_stopping_with_he_initialized_weights_loss'
+file_name_acc_weight_decay_and_initialized_weights =f'{experiment_folder}/early_stopping_he_initialized_weights_acc'
+title_loss_weight_decay_and_initialized_weights='Initialized weights loss with He weight initialization'
+title_acc_weight_decay_and_initialized_weights='Initialized weights acc with He weight initialization'
 
 ##################### L1 ############
 file_name_loss_l1 = f'{experiment_folder}/early_stopping_with_l1_regularizer_loss'

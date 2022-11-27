@@ -3,12 +3,12 @@ from sklearn import datasets
 from sklearn.model_selection import train_test_split
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn import metrics
-from NearestNeighbor.PrincipalComponentAnalysis import get_pca_data
+from NearestNeighbor.pca_utilities import get_pca_data
 import time
 
-from NearestNeighbor.data_handler import load_datasets
 from NearestNeighbor.feature_extraction import perform_feature_selection, \
      perform_feature_selection_with_recursive_feature_elimination
+from data_utilities.cifar10_utilities import load_datasets
 
 wine = datasets.load_wine()
 

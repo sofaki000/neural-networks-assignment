@@ -1,0 +1,3 @@
+1. all at once
+2. weight initialization, relu better with he initialization?
+not really, maybe not combining with weight decay?

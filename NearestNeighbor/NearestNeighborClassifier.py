@@ -2,7 +2,8 @@ from sklearn.neighbors import KNeighborsClassifier
 import numpy as np
 import warnings
 
-from NearestNeighbor.NearestNeighborClassifierImpl2 import load_datasets
+from data_utilities.cifar10_utilities import load_datasets
+
 warnings.filterwarnings('ignore')
 from enum import Enum
 from timeit import default_timer as timer
@@ -70,7 +71,6 @@ Xte_rows = X_test.reshape(X_test.shape[0], 32 * 32 ) # Xte_rows becomes 10000 x 
 class NearestNeighbor(object):
   def __init__(self):
     pass
-
   def train(self, X, y):
     """ X is N x D where each row is an example. Y is 1-dimension of size N """
     # the nearest neighbor classifier simply remembers all the training data

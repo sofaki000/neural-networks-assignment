@@ -1,9 +1,8 @@
 import numpy as np
+from NearestCentroidClassifier import config
 from data_utilities.preprocessing_data_utilities import get_raw_data, get_normalized_data, get_standarized_data, get_rescaled_data, \
     get_robustly_scaled_data
 
-experiments_file_name="nearest_centroid_experiments_impl.txt"
-f = open(experiments_file_name, "a")
 
 """A nearest centroid classifier. Similar class to NearestCentroid from module sklearn.neighbors.
   Methods:
@@ -61,6 +60,8 @@ from timeit import default_timer as timer
 from time import gmtime, strftime
 
 experiments_date = strftime("%Y-%m-%d %H:%M:%S", gmtime())
+f = open(config.experiments_file_name, "a")
+
 f.write(f"---------------------------{experiments_date}------------------------------------\n")
 X_train, y_train, X_test, y_test = get_raw_data()
 data_used = f'Training data shape:{X_train.shape}\nTraining labels shape:{y_train.shape}\nTest data shape:{X_test.shape}\nTest labels' \
@@ -87,41 +88,45 @@ def train_and_test_data_for_different_preprocessing(experiment_title, X_train, y
 
 
 ###################### Experiment 1 ######################
-experiment_1_title="Experiment 1- Raw train and test data\n"
-train_and_test_data_for_different_preprocessing(experiment_1_title, X_train=X_train, y_train=y_train,
-                                                X_test=X_test, y_test=y_test)
+train_and_test_data_for_different_preprocessing(config.experiment_1_title,
+                                                X_train=X_train,
+                                                y_train=y_train,
+                                                X_test=X_test,
+                                                y_test=y_test)
 
 ###################### Experiment 2 ######################
-experiment_2_title="Experiment 2- Normalizing train and test data\n"
-normalized_train_data, y_train, normalized_test_data, y_test = get_normalized_data()
-train_and_test_data_for_different_preprocessing(experiment_2_title,
-                                                X_train=normalized_train_data, y_train=y_train,
-                                                X_test=normalized_test_data, y_test=y_test)
-
-
-###################### Experiment 3 ######################
-# StandardScaler therefore cannot guarantee balanced feature scales in the presence of outliers.
-experiment_3_title="Experiment 3- Standardization of train and test data\n"
-x_scaled_train, y_train, x_scaled_test, y_test = get_standarized_data()
-train_and_test_data_for_different_preprocessing(experiment_3_title,
-                                                X_train=x_scaled_train, y_train=y_train,
-                                                X_test=x_scaled_test, y_test=y_test)
-
-
-###################### Experiment 4 ######################
-# MinMaxScaler rescales the data set such that all feature values are in the range [0, 1] as shown in the right panel below.
-experiment_4_title="Experiment 4- Rescaled train and test data in the range [0,1]\n"
-x_scaled_train, y_train, x_scaled_test, y_test =get_rescaled_data()
-train_and_test_data_for_different_preprocessing(experiment_4_title, X_train=x_scaled_train, y_train=y_train,
-                                                X_test=x_scaled_test, y_test=y_test)
-
-###################### Experiment 5 ######################
-# Robust scaler: Scales features using statistics that are robust to outliers.
-# This Scaler removes the median and scales the data according to the quantile range (defaults to IQR:
-# Interquartile Range). The IQR is the range between the 1st quartile (25th quantile) and the 3rd quartile (75th quantile).
-# Centering and scaling happen independently on each feature by computing the relevant statistics
-# on the samples in the training set. Median and interquartile range are then stored to be used on later data using the transform method.
-experiment_5_title="Experiment 5- Scaling features independently\n"
-x_scaled_train, y_train, x_scaled_test, y_test = get_robustly_scaled_data()
-train_and_test_data_for_different_preprocessing(experiment_5_title, X_train=x_scaled_train, y_train=y_train, X_test=x_scaled_test, y_test=y_test)
-f.close()
+# normalized_train_data, y_train, normalized_test_data, y_test = get_normalized_data()
+# train_and_test_data_for_different_preprocessing(config.experiment_2_title,
+#                                                 X_train=normalized_train_data,
+#                                                 y_train=y_train,
+#                                                 X_test=normalized_test_data,
+#                                                 y_test=y_test)
+#
+#
+# ###################### Experiment 3 ######################
+# # StandardScaler therefore cannot guarantee balanced feature scales in the presence of outliers.
+# x_scaled_train, y_train, x_scaled_test, y_test = get_standarized_data()
+# train_and_test_data_for_different_preprocessing(config.experiment_3_title,
+#                                                 X_train=x_scaled_train, y_train=y_train,
+#                                                 X_test=x_scaled_test, y_test=y_test)
+#
+#
+# ###################### Experiment 4 ######################
+# # MinMaxScaler rescales the data set such that all feature values are in the range [0, 1] as shown in the right panel below.
+# x_scaled_train, y_train, x_scaled_test, y_test =get_rescaled_data()
+# train_and_test_data_for_different_preprocessing(config.experiment_4_title,
+#                                                 X_train=x_scaled_train,
+#                                                 y_train=y_train,
+#                                                 X_test=x_scaled_test,
+#                                                 y_test=y_test)
+#
+# ###################### Experiment 5 ######################
+# # Robust scaler: Scales features using statistics that are robust to outliers.
+# # This Scaler removes the median and scales the data according to the quantile range (defaults to IQR:
+# # Interquartile Range). The IQR is the range between the 1st quartile (25th quantile) and the 3rd quartile (75th quantile).
+# # Centering and scaling happen independently on each feature by computing the relevant statistics
+# # on the samples in the training set. Median and interquartile range are then stored to be used on later data using the transform method.
+#
+# x_scaled_train, y_train, x_scaled_test, y_test = get_robustly_scaled_data()
+# train_and_test_data_for_different_preprocessing(config.experiment_5_title, X_train=x_scaled_train, y_train=y_train, X_test=x_scaled_test, y_test=y_test)
+# f.close()
